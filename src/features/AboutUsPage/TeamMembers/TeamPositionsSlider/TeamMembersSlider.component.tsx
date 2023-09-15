@@ -1,7 +1,6 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { SCREEN_SIZES } from '@/app/common/constants/screen-sizes.constants';
 import TeamMember from '@/models/team/team.model';
 
 import TeamMemberCard from '../../TeamMemberCard/TeamMemberCard.component';
@@ -10,29 +9,25 @@ type TeamMemberSliderProps = {
     team: TeamMember[];
 };
 
+const sliderProps = {
+    centeredSlides: true,
+    spaceBetween: 20,
+    slideToClickedSlide: true,
+    loop: true,
+};
+
 const TeamMemberSlider: React.FC<TeamMemberSliderProps> = ({ team }) => {
-    const getSliderData = () => {
-        if (team.length > 0) {
-            return (
-                <Swiper
-                    slidesPerView="auto"
-                    centeredSlides
-                    spaceBetween={20}
-                    slideToClickedSlide
-                    //pagination={window.innerWidth < SCREEN_SIZES.phone}
-                    loop
-                >
-                    {
-                    team.map((member) => (
-                        <SwiperSlide key = {member.id} >
-                            <TeamMemberCard {...member} />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            );
-        }
-        return <></>;
-    };
+    const getSliderData = () => (team.length > 0 ? (
+        <Swiper slidesPerView="auto" {...sliderProps}>
+            {team.map((member) => (
+                <SwiperSlide key={member.id}>
+                    <TeamMemberCard {...member} />
+                </SwiperSlide>
+            ))}
+        </Swiper>
+    ) : (
+        <></>
+    ));
 
     return <div className="teamMembersSlider">{getSliderData()}</div>;
 };

@@ -23,7 +23,7 @@
         font-weight: 500;
         line-height: 21px;
         letter-spacing: 0em;
-        color: #C4C4C4;
+        color: c.$selected-arrow-color;
 
         &-active {
             font-size: 24px;
@@ -46,9 +46,7 @@
 }
 
 .topSliderContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mut.flex-centered();
     margin: 0 auto;
 }
 

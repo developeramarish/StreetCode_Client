@@ -1,9 +1,12 @@
 import './VacancyModal.styles.scss';
-import { Button, Modal } from "antd";
-import CancelBtn from '@images/utils/Cancel_btn.svg';
-import React from 'react';
-import { SCREEN_SIZES } from '@/app/common/constants/screen-sizes.constants';
 
+import CancelBtn from '@images/utils/Cancel_btn.svg';
+
+import React from 'react';
+
+import { Button, Modal } from 'antd';
+
+import { SCREEN_SIZES } from '@/app/common/constants/screen-sizes.constants';
 
 interface Props {
     isOpen: boolean,
@@ -11,8 +14,7 @@ interface Props {
     job : Job
 }
 
-const VacancyModal = ({isOpen, setOpen, job}: Props) => {
-
+const VacancyModal = ({ isOpen, setOpen, job }: Props) => {
     const descriptionLines = job.description.split('\n').map((line, index) => (
         <React.Fragment key={index}>
             {line}
@@ -21,42 +23,44 @@ const VacancyModal = ({isOpen, setOpen, job}: Props) => {
     ));
 
     const getWidth = () => {
-        if(window.innerWidth > SCREEN_SIZES.tablet) {
-            return 830
+        if (window.innerWidth > SCREEN_SIZES.tablet) {
+            return 830;
         }
-        if(window.innerWidth > SCREEN_SIZES.smallTablet){
-            return 600
+        if (window.innerWidth > SCREEN_SIZES.smallTablet) {
+            return 600;
         }
-        if(window.innerWidth > SCREEN_SIZES.phone){
-            return 400
+        if (window.innerWidth > SCREEN_SIZES.phone) {
+            return 400;
         }
-        if(window.innerWidth > SCREEN_SIZES.smallPhone){
-            return 310
+        if (window.innerWidth > SCREEN_SIZES.smallPhone) {
+            return 310;
         }
-            return 270
-    }
+        return 270;
+    };
 
-   return(
+    return (
         <Modal
-            open = {isOpen}
-            onCancel={ ()=>{setOpen(false)}}
+            open={isOpen}
+            onCancel={() => {
+                setOpen(false);
+            }}
             closeIcon={<CancelBtn />}
             className="vacancyModal"
-            footer = {null}
+            footer={null}
             width={getWidth()}
-            >
-                
-                <div className='vacancyModalContainer'>
-                    <div className='textContainer'>
-                        <h2>{job.title}</h2>
-                        <h3>{job.salary}</h3>
-                        <p>{descriptionLines}</p>
-                    </div>
-                    <div className='buttonContainer'>
-                        <Button className='vacancyModalButton streetcode-custom-button'>Відгукнутися</Button>
-                    </div>
+        >
+
+            <div className="vacancyModalContainer">
+                <div className="textContainer">
+                    <h2>{job.title}</h2>
+                    <h3>{job.salary}</h3>
+                    <p>{descriptionLines}</p>
                 </div>
+                <div className="buttonContainer">
+                    <Button className="vacancyModalButton streetcode-custom-button">Відгукнутися</Button>
+                </div>
+            </div>
         </Modal>
-   );
-}
+    );
+};
 export default VacancyModal;

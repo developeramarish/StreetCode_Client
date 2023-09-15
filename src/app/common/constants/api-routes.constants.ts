@@ -86,7 +86,7 @@ export const API_ROUTES = {
     POSITIONS: {
         GET_ALL: 'position/getAll',
         CREATE: 'position/create',
-        GET_ALL_WITH_MEMBERS: 'Position/GetAllWithTeamMembers',
+        GET_ALL_WITH_MEMBERS: 'position/getAllWithTeamMembers',
     },
     TOPONYMS: {
         GET_ALL: 'toponym/getAll',
@@ -223,7 +223,7 @@ export const API_ROUTES = {
         GET_ALL_SHORT: 'job/getAllShort',
         DELETE: 'job/delete',
         CHANGE_STATUS: 'job/changeJobStatus',
-        GET_ACTIVE:'Job/GetActiveJobs',
+        GET_ACTIVE: 'job/getActiveJobs',
         GET_BY_ID: 'job/getById',
         UPDATE: 'job/update',
         CREATE: 'job/create',

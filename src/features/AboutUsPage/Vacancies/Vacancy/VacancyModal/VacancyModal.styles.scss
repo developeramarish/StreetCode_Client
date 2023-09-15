@@ -5,7 +5,6 @@
 @use "@assets/sass/mixins/_vendor.mixins.scss" as vnd;
 @use "@assets/sass/variables/_variables.sizes.scss" as s;
 
-
 .vacancyModal {
     .ant-modal {
         &-content{
@@ -89,5 +88,4 @@
           align-items: center;
         }
       }
-    
 }

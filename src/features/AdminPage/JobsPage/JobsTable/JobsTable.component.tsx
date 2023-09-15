@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { DeleteOutlined, DownOutlined, EditOutlined } from '@ant-design/icons';
 
 import {
-    Button, Dropdown, MenuProps, Space, Table,
+    Button, Dropdown, MenuProps, message,
+    Space, Table,
 } from 'antd';
 
 import JobApi from '@/app/api/job/Job.api';
@@ -32,7 +33,7 @@ const JobsTable = () => {
                     )
                     .catch(
                         (e) => {
-                            console.log(e);
+                            message.error('Виникла помилка при видаленні');
                         },
                     );
                 modalStore.setConfirmationModal('confirmation');

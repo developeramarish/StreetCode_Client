@@ -33,30 +33,26 @@ const SliderComponents = (props: Props) => {
         props.setActive(activePositionId);
     };
 
+    const positionSliderProps = {
+        slidesPerView: 5,
+        centeredSlides: true,
+        loop: true,
+        onSwiper: (swiper) => setSwiper(swiper),
+        onSlideChange: (swiper) => getActive(swiper),
+        navigation: { nextEl: '.arrow-left', prevEl: '.arrow-right' },
+        modules: [Navigation],
+        breakpoints: {
+            360: { slidesPerView: 1 },
+            425: { slidesPerView: 3 },
+            768: { slidesPerView: 5 },
+        },
+    };
+
     return (
         <div className="topSliderContainer">
             <LeftSliderArrow className="slider-arrow" alt="Previous" onClick={handlePreviousSlide} />
             <div className="topSlider">
-                <Swiper
-                    slidesPerView={5}
-                    centeredSlides
-                    loop
-                    onSwiper={(swiper) => setSwiper(swiper)}
-                    onSlideChange={(swiper) => getActive(swiper)}
-                    navigation={{ nextEl: '.arrow-left', prevEl: '.arrow-right' }}
-                    modules={[Navigation]}
-                    breakpoints={{
-                        360: {
-                            slidesPerView: 1,
-                        },
-                        425: {
-                            slidesPerView: 3,
-                        },
-                        768: {
-                            slidesPerView: 5,
-                        },
-                    }}
-                >
+                <Swiper {...positionSliderProps}>
                     {props.positions.map((position) => (
                         <SwiperSlide className="square" key={position.id}>
                             <div key={position.position}>

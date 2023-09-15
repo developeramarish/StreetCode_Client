@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import CancelBtn from '@assets/images/utils/Cancel_btn.svg';
 
 import {
-    Button, Form, Input, Modal, Popover,
+    Button, Form, Input, message,
+    Modal, Popover,
     Select,
 } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
@@ -19,8 +20,8 @@ interface Props {
     currentId: number,
 }
 
-const JobsModal = ({ open, setOpen, currentId } : Props) => {
-    const maxLengths = {
+const JobsModal = ({ open, setOpen, currentId }: Props) => {
+    const MAX_LENGTHS = {
         maxLenghtVacancyName: 50,
         maxLenghtVacancyDesc: 2000,
         maxLenghtVacancySalary: 15,
@@ -29,7 +30,7 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
     const [current, setCurrent] = useState<Job>();
     const [form] = Form.useForm();
     const [storedJob, setStoredJob] = useState<Job>();
-    const emptyJob : Job = {
+    const emptyJob: Job = {
         title: form.getFieldValue('title'),
         description: form.getFieldValue('description'),
         status: form.getFieldValue('status'),
@@ -50,7 +51,7 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
                         salary: currentJob?.salary,
                     });
                 } catch (error) {
-                    console.log(error);
+                    message.error('Виникла помилка');
                 }
             } else if (currentId === 0) {
                 setStoredJob(emptyJob);
@@ -64,6 +65,11 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
         };
         fetchJobData();
     }, [open, currentId, form]);
+
+    const clearModal = () => {
+        form.resetFields();
+        setOpen(false);
+    };
 
     const handleSave = async () => {
         try {
@@ -87,22 +93,15 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
             }
             clearModal();
         } catch (error) {
-            console.log(error);
+            message.error('Виникла помилка при збереженні');
         }
-    };
-
-    const clearModal = () => {
-        form.resetFields();
-        setOpen(false);
     };
 
     return (
         <Modal
             className="modalContainer"
             open={open}
-            onCancel={() => {
-                setOpen(false);
-            }}
+            onCancel={() => setOpen(false)}
             footer={null}
             maskClosable
             centered
@@ -126,7 +125,7 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
                 >
                     <Input
                         showCount
-                        maxLength={maxLengths.maxLenghtVacancyName}
+                        maxLength={MAX_LENGTHS.maxLenghtVacancyName}
                     />
                 </FormItem>
                 <FormItem
@@ -154,7 +153,7 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
                     <TextArea
                         className="textWrapper"
                         showCount
-                        maxLength={maxLengths.maxLenghtVacancyDesc}
+                        maxLength={MAX_LENGTHS.maxLenghtVacancyDesc}
                     />
                 </FormItem>
                 <FormItem
@@ -164,7 +163,7 @@ const JobsModal = ({ open, setOpen, currentId } : Props) => {
                 >
                     <Input
                         showCount
-                        maxLength={maxLengths.maxLenghtVacancySalary}
+                        maxLength={MAX_LENGTHS.maxLenghtVacancySalary}
                     />
                 </FormItem>
                 <div className="center">
