@@ -5,6 +5,7 @@ import CancelBtn from '@images/utils/Cancel_btn.svg';
 
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useRef, useState } from 'react';
+import { act } from 'react-dom/test-utils';
 import { DeleteOutlined, UserAddOutlined } from '@ant-design/icons';
 import PreviewFileModal from '@features/AdminPage/NewStreetcode/MainBlock/PreviewFileModal/PreviewFileModal.component';
 import SOCIAL_OPTIONS from '@features/AdminPage/TeamPage/TeamModal/constants/socialOptions';
@@ -66,7 +67,9 @@ const TeamModal: React.FC<{
 
     useEffect(() => {
         if (open) {
-            PositionsApi.getAll().then((pos) => setPositions(pos));
+            act(() => {
+                PositionsApi.getAll().then((pos) => setPositions(pos));
+            });
         }
     }, [open]);
 

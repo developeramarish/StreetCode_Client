@@ -18,7 +18,6 @@ const jestConfig: JestConfigWithTsJest = {
         '^@api/(.*)$': '<rootDir>/src/app/api/$1',
         '^@constants/(.*)$': '<rootDir>/src/app/common/constants/$1',
         '^@hooks/(.*)$': '<rootDir>/src/app/common/hooks/$1',
-       // '^@features/AdminPage/NewStreetcode/MainBlock/PreviewFileModal/PreviewFileModal.component.tsx$': '<rootDir>/__mocks__/mocked-PreviewFileModal.component.tsx',        
 
         // DEV_NOTE: Down below is the right solution for compiling files by path
         // But we need to fix ALL typo errors before it could be compiled
