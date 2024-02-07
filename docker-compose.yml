@@ -49,6 +49,10 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+    volumes:
+      - /var/logs/frontend:/var/log/nginx/
+    
+        
     
   backend:
     restart: always
@@ -74,6 +78,7 @@ services:
       - type: bind
         source: /imagestorage
         target: /mnt/data
+      - /var/logs/backend:/var/log/
     healthcheck:
       test: curl --fail http://localhost/api/partners/getAll || exit 1
       interval: 30s
