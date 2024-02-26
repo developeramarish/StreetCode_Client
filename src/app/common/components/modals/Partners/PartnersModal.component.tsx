@@ -3,7 +3,7 @@ import './PartnersModal.styles.scss';
 import CancelBtn from '@images/utils/Cancel_btn.svg';
 
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useNavigate } from 'react-router-dom';
 import useMobx, { useModalContext } from '@stores/root-store';
@@ -25,20 +25,30 @@ const PartnersModal = () => {
     const [formData, setFormData] = useState({ email: '', message: '' });
     const [messageApi, messageContextHolder] = message.useMessage();
     const [isVerified, setIsVerified] = useState(false);
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const siteKey = window._env_.RECAPTCHA_SITE_KEY;
 
-    const newEmail: Email = { from: formData.email, content: formData.message };
+    const handleChange = (e: any) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
     const onFinish = () => {
         if (isVerified) {
+            const token = recaptchaRef?.current?.getValue();
+            const newEmail: Email = { from: formData.email, content: formData.message, token: token };
             EmailApi.send(newEmail)
                 .then(() => {
                     onCancel();
                     successMessage();
                 })
-                .catch((e) => {
+                .catch((error) => {
                     onCancel();
-                    errorMessage();
+                    if (error === 429) {
+                        errorMessage('Ви перевищили ліміт повідомлень, повторіть через 5 хвилин!');
+                    }
+                    else {
+                        errorMessage('Щось пішло не так...');
+                    }
                 });
+            recaptchaRef.current?.reset();
         }
     };
 
@@ -64,10 +74,10 @@ const PartnersModal = () => {
         form.resetFields();
     };
 
-    const errorMessage = () => {
+    const errorMessage = (message: string) => {
         messageApi.open({
             type: 'error',
-            content: 'Щось пішло не так...',
+            content: message,
         });
     };
 
@@ -156,8 +166,9 @@ const PartnersModal = () => {
                         <div className="captchaBlock ">
                             <ReCAPTCHA
                                 className="required-input"
-                                sitekey="6Lf0te8mAAAAAN47cZDXrIUk0kjdoCQO9Jl0DtI4"
+                                sitekey={siteKey ? siteKey : ""}
                                 onChange={handleVerify}
+                                ref={recaptchaRef}
                             />
                         </div>
                         <Form.Item>
