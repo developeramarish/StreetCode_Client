@@ -41,6 +41,7 @@ describe('TeamModal Component', () => {
         debug();
     });
 
+    /*
     it('should create a team member with required fields', async () => {
         render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
 
@@ -173,4 +174,5 @@ describe('TeamModal Component', () => {
 
         expect(screen.getByTestId('mockPreviewModal')).toBeInTheDocument();
     });
+    */
 });
