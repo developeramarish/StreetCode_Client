@@ -1,8 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import FRONTEND_ROUTES from '@constants/frontend-routes.constants';
+import UserLoginStore from '@stores/user-login-store';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-
 // eslint-disable-next-line no-restricted-imports
 import FRONTEND_ROUTES from '../common/constants/frontend-routes.constants';
 import { API_URL, SERVER_API_URL } from '../common/utils/config';
@@ -53,7 +55,7 @@ const createAxiosInstance = (baseUrl: string) => {
                 toast.error(errorMessage);
             }
 
-            return Promise.reject(message);
+            return Promise.reject(response?.status);
         },
     );
 
