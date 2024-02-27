@@ -6,7 +6,10 @@ const jestConfig: JestConfigWithTsJest = {
     roots: ['<rootDir>'],
     moduleNameMapper: {
         '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-        'antd': '<rootDir>/__mocks__/antd/Modal',
+        'antd': '<rootDir>/__mocks__/antd/antd',
+        'antd/es/form/FormItem': '<rootDir>/__mocks__/antd/es/form/FormItem',
+        'antd/es/form/TextArea': '<rootDir>/__mocks__/antd/es/input/TextArea',
+        'antd/es/mentions': '<rootDir>/__mocks__/antd/es/mentions/mentions',
          '@/app/api/team/positions.api': '<rootDir>/src/app/api/team/positions.api.mock.ts',
         '^@images/(.*)$': '<rootDir>/src/assets/images/$1',
         '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.ts',

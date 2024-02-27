@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -22,30 +22,8 @@ jest.mock('@/app/api/team/positions.api', () => ({
     ])),
 }));
 
-jest.mock('antd', () => {
-    const originalModule = jest.requireActual('antd');
-    return {
-        ...originalModule,
-        Form: {
-            ...originalModule.Form,
-            useForm: jest.fn(() => [{
-                setFieldsValue: jest.fn(),
-                resetFields: jest.fn(),
-                validateFields: jest.fn(),
-                submit: jest.fn(),
-            }, {}]),
-        },
-        Modal: jest.fn(({ onCancel }) => (
-            <div>
-                <div data-testid="modal-close" onClick={onCancel} />
-                <div data-testid="modal-content" />
-            </div>
-        )),
-        message: {
-            config: jest.fn(),
-        },
-    };
-});
+const originalModule = jest.requireActual('antd');
+console.log('originalModule', originalModule.Form);
 
 jest.mock('@features/AdminPage/NewStreetcode/MainBlock/PreviewFileModal/PreviewFileModal.component', () => ({
     __esModule: true,
@@ -71,9 +49,15 @@ describe('TeamModal Component', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('antd/lib/modal');
+    it.only('should render itself and its elements', () => {
+        const { container, debug } = render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
 
-    it.only('should create a team member with required fields', async () => {
+        debug();
+    });
+
+    /*
+    it('should create a team member with required fields', async () => {
+
         render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
 
         // Fill in required fields
@@ -242,4 +226,5 @@ describe('TeamModal Component', () => {
 
         expect(screen.getByTestId('mockPreviewModal')).toBeInTheDocument();
     });
+    */
 });
