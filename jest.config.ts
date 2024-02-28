@@ -8,6 +8,7 @@ const jestConfig: JestConfigWithTsJest = {
         '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
         'antd': '<rootDir>/__mocks__/antd/antd',
         'antd/es/form/FormItem': '<rootDir>/__mocks__/antd/es/form/FormItem',
+        'antd/es/form/Form': '<rootDir>/__mocks__/antd/es/form/Form', 
         'antd/es/form/TextArea': '<rootDir>/__mocks__/antd/es/input/TextArea',
         'antd/es/mentions': '<rootDir>/__mocks__/antd/es/mentions/mentions',
          '@/app/api/team/positions.api': '<rootDir>/src/app/api/team/positions.api.mock.ts',

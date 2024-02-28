@@ -20,7 +20,7 @@ type FormType = {
     useForm: Function,
     Item: typeof Item
 }
-*/
+
 
 /*
 export const Form = {
@@ -51,28 +51,44 @@ export const Form = {
     }
 }
 */
+interface FormProps {
+  form: React.ReactNode;
+  layout: string; 
+  onFinish: () => void;
+}
 
 export const mockSetFieldsValue = jest.fn();
 export const mockResetFields = jest.fn();
 
-const FormComponent = ({ form, layouyt, onFinish }) => {
+const FormComponent: React.FC<FormProps> = ({ form, layout, onFinish }) => {
     return(
           <>
             <div data-test-id='form'>{form}</div>
-            <div data-test-id='form-layout'>{layouyt}</div>
+            <div data-test-id='form-layout'>{layout}</div>
             <button type='button' data-test-id="form-button" onClick={onFinish}/>
           </>
     )
 };
   
-  const useForm = () => {
-    return [{
-      setFieldsValue: mockSetFieldsValue,
-      resetFields: mockResetFields,
-    }] 
-  };
+const useForm = (): [{ 
+  setFieldsValue: typeof mockSetFieldsValue;
+  resetFields: typeof mockResetFields; 
+}] => {
+  return [{ 
+    setFieldsValue: mockSetFieldsValue,
+    resetFields: mockResetFields
+  }];
+};
+
   
-  const Item = ({ name, label, rules, children }) => {
+  interface ItemProps {
+    name: string;
+    label: string;
+    rules: ReactNode;
+    children: ReactNode;  
+  }
+
+  const Item: React.FC<ItemProps> = ({ name, label, rules, children }) => {
     return(
         <>
             <div className='itemName' data-test-id="item-name">{name}</div>
@@ -81,10 +97,17 @@ const FormComponent = ({ form, layouyt, onFinish }) => {
             <div className='ItemChildren' data-test-id="item-children">{children}</div>
         </>
     )
-  };
+};
+  
+interface FormType  {
+  useForm: () => [{ 
+    setFieldsValue: typeof mockSetFieldsValue;
+    resetFields: typeof mockResetFields;
+  }]; 
+}
 
-const mockedForm = FormComponent;
-mockedForm.Item = Item;
-mockedForm.useForm = useForm;
+const mockedForm: FormType = {
+  useForm 
+};
   
 export default mockedForm;

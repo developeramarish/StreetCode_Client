@@ -2,6 +2,8 @@ import React, { MouseEventHandler, ReactNode } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import Form from 'antd/es/form/Form';
+
 import * as PositionsApi from '@/app/api/team/positions.api';
 
 import TeamModal from './TeamModal.component';
@@ -22,6 +24,13 @@ jest.mock('@/app/api/team/positions.api', () => ({
     ])),
 }));
 
+jest.mock('antd', () => {
+    const originalAntd = jest.requireActual('antd');
+    return {
+        ...originalAntd,
+        Form,
+    };
+});
 const originalModule = jest.requireActual('antd');
 console.log('originalModule', originalModule.Form);
 
@@ -40,17 +49,24 @@ const mockTeamMember = {
     description: 'Some description',
 };
 
-const setIsModalOpen = jest.fn();
+//const setIsModalOpen = jest.fn();
 
 describe('TeamModal Component', () => {
     const mockAfterSubmit = jest.fn();
+    const open = true;
+    const setIsModalOpen = jest.fn();
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it.only('should render itself and its elements', () => {
-        const { container, debug } = render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
+        // eslint-disable-next-line max-len
+        const { container, debug } = render(<TeamModal
+            open={open}
+            setIsModalOpen={setIsModalOpen}
+            afterSubmit={mockAfterSubmit}
+        />);
 
         debug();
     });

@@ -2,13 +2,13 @@
 import { redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import FRONTEND_ROUTES from '@constants/frontend-routes.constants';
-import UserLoginStore from '@stores/user-login-store';
+// import UserLoginStore from '@stores/user-login-store';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 // eslint-disable-next-line no-restricted-imports
-import FRONTEND_ROUTES from '../common/constants/frontend-routes.constants';
 import { API_URL, SERVER_API_URL } from '../common/utils/config';
+import UserLoginStore from '../stores/user-login-store';
 
 const defaultBaseUrl = process.env.NODE_ENV === 'development'
     ? 'https://localhost:5001/api' : API_URL;
