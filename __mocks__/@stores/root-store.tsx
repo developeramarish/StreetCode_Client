@@ -1,6 +1,8 @@
 export const mockID = 1;
 export const mockIsOpen = true;
 export const mockSetModal = jest.fn();
+export const mockUpdateNews = jest.fn();
+export const mockCreateNews = jest.fn();
 export const mockUpdateTeam = jest.fn();
 export const mockCreateTeam = jest.fn();
 
@@ -17,15 +19,28 @@ export const useModalContext = () => ({
 });
 
 export const useMobx = () => ({
-    teamStore: {
-        updateTeam: mockUpdateTeam,
-        createTeam: mockCreateTeam,
-        getTeamArray: [
+    newsStore: {
+        updateNews: mockUpdateNews,
+        createNews: mockCreateNews,
+        getNewsArray: [
             {
-                name: 'name',
-                imageId: 1,
+                id: 1,
+                title: 'title',
+                text: 'text',
+                url: 'url',
+                creationDate: '2024-01-29',
             },
         ],
+
+        teamStore: {
+            updateTeam: mockUpdateTeam,
+            createTeam: mockCreateTeam,
+            getTeamArray: [
+                {
+                    name: 'name',
+                    imageId: 1,
+                }],
+        },
     },
 });
 

@@ -1,6 +1,9 @@
 import React, { ReactNode, MouseEventHandler, ChangeEventHandler, JSX } from 'react';
 import mockedForm from '../antd/es/form/Form';
 
+export {default as Form} from './es/form/Form';
+
+
 type ModalProps = {
   title: string,
   open: boolean,
@@ -47,9 +50,15 @@ type CheckboxProps = {
 
 export const mockSetFieldsValue = jest.fn();
 export const mockResetFields = jest.fn();
+
+type OptionProps = {
+  key?: string,
+  value?: string
+}
+
 export const mockConfig = jest.fn();
 
-export const Modal = ({ title, open, onOk, onCancel, children }: ModalProps): JSX.Element => {
+export const Modal = ({ title, open, onOk, onCancel, children }: ModalProps) => {
   return (
     <>
       <div className='modalTitle'>{title}</div>
@@ -62,21 +71,24 @@ export const Modal = ({ title, open, onOk, onCancel, children }: ModalProps): JS
 };
 
 export const Input = ({ maxLength, showCount }: InputProps) => {
-  return(
-      <>
-          <div data-test-id="max-lenght">{maxLength}</div>
-          <div data-test-id="show-count">{showCount}</div>
-      </>
+
+  return (
+    <>
+      <div data-test-id="max-lenght">{maxLength}</div>
+      <div data-test-id="show-count">{showCount}</div>
+    </>
   )
 };
 
 export const Button = ({ className, onClick, children }: ButtonProps) => {
-  return(
-      <>
-          <div data-test-id="button-class" className={className}/>
-          <button type='button' data-test-id="button-button" onClick={onClick}/>
-          <div data-test-id="modal-children">{children}</div>
-      </>
+
+  return (
+    <>
+      <div data-test-id="button-class" className={className} />
+      <button type='button' data-test-id="button-button" onClick={onClick} />
+      <div data-test-id="modal-children">{children}</div>
+    </>
+
   )
 };
 
@@ -86,6 +98,7 @@ export const message = {
 
 export const Popover = ({ content, trigger, children }: PopoverProps) => {
   return(
+
     <>
       <div data-test-id="popover-content">{content}</div>
       <div data-test-id="popover-trigger">{trigger}</div>
@@ -94,18 +107,32 @@ export const Popover = ({ content, trigger, children }: PopoverProps) => {
   )
 };
 
-export const Select = ({ className, onSelect, mode, onDeselect, value, children }: SelectProps) => {
-  return(
+const Option = ({key, value}: OptionProps) => {
+  return (
     <>
-      <div className={className} data-test-id="select-class-name"/>
-      <button type='button' data-test-id="select-on-select" onClick={onSelect}/>
+      <div data-test-id="option-key">{key}</div>
+      <div data-test-id="option-value">{value}</div>
+    </>
+  )
+}
+
+const Select = ({ className, onSelect, mode, onDeselect, value, children }: SelectProps) => {
+  return (
+    <>
+      <div className={className} data-test-id="select-class-name" />
+      <button type='button' data-test-id="select-on-select" onClick={onSelect} />
       <div data-test-id="select-mode">{mode}</div>
-      <button type='button' data-test-id="select-on-deselect" onClick={onDeselect}/>
+      <button type='button' data-test-id="select-on-deselect" onClick={onDeselect} />
       <div data-test-id="select-value">{value}</div>
       <div data-test-id="select-children">{children}</div>
     </>
   )
 };
+
+
+Select.Option = Option;
+
+export {Select};
 
 /*
 export const UploadFile = () => {
@@ -117,12 +144,39 @@ export const UploadFile = () => {
 };
 */
 
-export const Checkbox = ({ checked, onChange, children}: CheckboxProps) => {
-  return(
+
+export const Checkbox = ({ checked, onChange, children }: CheckboxProps) => {
+  return (
     <>
       <input type="checkbox" checked={checked} onChange={onChange}>{children}</input>
     </>
   )
 };
 
-export const Form = mockedForm;
+//export const Form = mockedForm;
+
+// export const mockSetFieldsValue = jest.fn();
+// export const mockResetFields = jest.fn();
+
+
+// type useFormProps = {
+//   setFieldsValue: typeof mockSetFieldsValue,
+//   resetFields: typeof mockResetFields,
+// }
+
+// type ItemProps = {
+//   name: string,
+//   label: string,
+//   rules: ReactNode,
+//   children: ReactNode,
+// };
+
+// type FormProps = {
+//   form: ReactNode,
+//   layout: string,
+//   onFinish: MouseEventHandler<HTMLButtonElement>,
+//   useForm: () => any
+// }
+
+// declare const Form: FormProps;
+// export default Form;
