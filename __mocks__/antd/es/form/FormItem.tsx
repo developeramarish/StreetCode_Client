@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 type FormItemProps = {
-    name: string,
-    label: string,
+    name: string;
+    label: string;
+    rules?: any[];
+    children?: ReactNode;
 }
 
-const FormItem = ({ name, label }: FormItemProps) => {
-    return(
+const FormItem: React.FC<FormItemProps> = ({ name, label, rules, children }) => {
+    return (
         <>
             <div data-test-id="form-item-label">{label}</div>
             <div data-test-id="form-item-name">{name}</div>
+            {children }
         </>
     )
 };

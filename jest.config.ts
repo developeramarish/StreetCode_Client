@@ -6,7 +6,7 @@ const jestConfig: JestConfigWithTsJest = {
   roots: ["<rootDir>"],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
-    antd: "<rootDir>/__mocks__/antd/antd",
+    //antd: "<rootDir>/__mocks__/antd/antd",
     "antd/es/form/FormItem": "<rootDir>/__mocks__/antd/es/form/FormItem",
     "antd/es/form/Form": "<rootDir>/__mocks__/antd/es/form/Form",
     "antd/es/form/TextArea": "<rootDir>/__mocks__/antd/es/input/TextArea",
@@ -51,7 +51,9 @@ const jestConfig: JestConfigWithTsJest = {
 
   verbose: true,
   collectCoverageFrom: [
-    "src/**/*.{ts,js}", // temp disable coverage collection for tsx, jsx until type errors will be fixed
+    "src/**/*.{ts,js}",
+    "!src/**/*.d.ts",
+    // temp disable coverage collection for tsx, jsx until type errors will be fixed
   ],
   globals: {
     _env_: {

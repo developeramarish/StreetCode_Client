@@ -13,3 +13,5 @@ export const Option = ({ key, value }: OptionProps) => {
         </>
     )
 };
+
+export default { Option };
