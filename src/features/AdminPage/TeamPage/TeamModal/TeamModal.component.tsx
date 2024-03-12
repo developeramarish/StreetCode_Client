@@ -267,7 +267,7 @@ const TeamModal: React.FC<{
                         label="Прізвище та ім'я: "
                         rules={[{ required: true, message: "Введіть прізвище та ім'я" }]}
                     >
-                        <Input maxLength={41} showCount />
+                        <Input data-testid="surname-and-name-input" maxLength={41} showCount />
                     </Form.Item>
 
                     <Form.Item label="Позиції">
@@ -388,7 +388,7 @@ const TeamModal: React.FC<{
 
                 <div className="center">
                     {/* disabled={fileList?.length === 0} */}
-                    <Button className="streetcode-custom-button" onClick={handleOk}>
+                    <Button data-testid="button-test" className="streetcode-custom-button" onClick={handleOk}>
                         Зберегти
                     </Button>
                 </div>
