@@ -7,6 +7,7 @@ const jestConfig: JestConfigWithTsJest = {
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
     //antd: "<rootDir>/__mocks__/antd/antd",
+    "^antd/(.*)$": "<rootDir>/node_modules/antd/es/$1",
     "antd/es/form/FormItem": "<rootDir>/__mocks__/antd/es/form/FormItem",
     "antd/es/form/Form": "<rootDir>/__mocks__/antd/es/form/Form",
     "antd/es/form/TextArea": "<rootDir>/__mocks__/antd/es/input/TextArea",
@@ -24,10 +25,9 @@ const jestConfig: JestConfigWithTsJest = {
     "^@constants/(.*)$": "<rootDir>/src/app/common/constants/$1",
     "^@hooks/(.*)$": "<rootDir>/src/app/common/hooks/$1",
     "^antd/es/upload$": "<rootDir>/__mocks__/antd/es/upload/upload.tsx",
-    "^antd/es/date-picker/locale/uk_UA$":
-      "<rootDir>/__mocks__/antd/es/date/localeprovider.tsx",
-
-    "^antd/(.*)$": "<rootDir>/node_modules/antd/es/$1",
+    "^antd/es/date-picker/locale/uk_UA$": "<rootDir>/__mocks__/antd/es/date/localeprovider.tsx",
+    "^antd/locale/(.*)$": "<rootDir>/node_modules/antd/locale/$1",
+    "^antd/es/table$": "<rootDir>/node_modules/antd/es/table",
 
     // DEV_NOTE: Down below is the right solution for compiling files by path
     // But we need to fix ALL typo errors before it could be compiled
