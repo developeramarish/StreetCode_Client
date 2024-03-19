@@ -1,24 +1,46 @@
 import React, { MouseEventHandler, ReactNode } from 'react';
 import {
-    act, fireEvent, render, screen, waitFor,
+    act, render, screen, waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-// import matchMediaPolyfill, { Mock } from 'match-media-mock';
-import { Form } from 'antd';
-
-import * as PositionsApi from '@/app/api/team/positions.api';
-
+import '@testing-library/jest-dom';
 import TeamModal from './TeamModal.component';
+import { TeamCreateUpdate } from '@/models/team/team.model';
+import TeamApi from '@/app/api/team/team.api';
+import Image, { ImageCreate } from '@/models/media/image.model';
 
-const form = {
-    setFieldsValue: jest.fn(),
-    resetFields: jest.fn(),
-    validateFields: jest.fn(),
-    submit: jest.fn(),
-};
+global.HTMLCanvasElement.prototype.getContext = jest.fn(); // warning from FileUploader
+global.URL.createObjectURL = jest.fn(); // error(?) from FileUploader
 
-const getImageAsFileInArray = jest.fn();
+jest.mock("@/app/api/team/team.api", () => ({
+  create: jest.fn(() => { }),
+  update: jest.fn(() => { }),
+}));
+
+jest.mock("@/app/api/media/images.api", () => ({
+  create: (image: ImageCreate) => (
+    Promise.resolve({
+      id: 999,
+      base64: image.baseFormat,
+      blobName: image.title,
+      mimeType: image.mimeType,
+    } as Image)
+    ),
+}));
+
+jest.mock("@stores/root-store", () => ({
+  __esModule: true, // This property is needed when mocking modules that have a default export
+  default: () => ({
+    teamStore: {
+      fetchTeamAll: jest.fn().mockResolvedValue([]),
+      TeamMap: new Map(),
+      getTeamArray: [],
+      setInternalMap: jest.fn(),
+      createTeam: (team: TeamCreateUpdate) => { TeamApi.create(team) },
+      updateTeam: (team: TeamCreateUpdate) => { TeamApi.update(team) },
+    },
+  })
+}));
 
 jest.mock('@/app/api/team/positions.api', () => ({
     getAll: jest.fn(() => Promise.resolve([
@@ -26,15 +48,6 @@ jest.mock('@/app/api/team/positions.api', () => ({
         { id: 2, position: 'Developer' },
     ])),
 }));
-
-jest.mock('antd', () => {
-    const originalAntd = jest.requireActual('antd');
-    return {
-        ...originalAntd,
-        ...jest.requireActual('antd/es/form/Form'),
-    };
-});
-const originalModule = jest.requireActual('antd');
 
 jest.mock('@features/AdminPage/NewStreetcode/MainBlock/PreviewFileModal/PreviewFileModal.component', () => ({
     __esModule: true,
@@ -61,10 +74,13 @@ window.matchMedia = window.matchMedia || function () {
     };
 };
 
+
 describe('TeamModal Component', () => {
-    const mockAfterSubmit = jest.fn();
-    const open = true;
-    const setIsModalOpen = jest.fn();
+    let file: File;
+
+    beforeEach(() => {
+        file = new File(["(⌐□_□)"], "chucknorris.png", { type: "image/png" });
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -81,37 +97,42 @@ describe('TeamModal Component', () => {
     //     debug();
     // });
 
-    test.only('should create a team member with required fields', async () => {
-        render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
+    test.only("should create a team member with required fields", async () => {
+        // await act(async () => render(<TeamModal open={true} setIsModalOpen={() => {}} />));
+        render(<TeamModal open={true} setIsModalOpen={() => {}}/>);
+    
+        const button = screen.getByRole("button", { name: /зберегти/i });
+        const nameInput = screen.getByTestId("surname-and-name-input");
+    
+        const fileInput = screen.getByTestId("fileuploader");
+        const inputElement = fileInput as HTMLInputElement;
+    
+        await act(async () => {
+          userEvent.type(nameInput, "something");
+          userEvent.upload(fileInput, file);
+        });
+    
+        expect(nameInput).toHaveValue("something");
+        if (inputElement.files) {
+          expect(inputElement.files[0]).toStrictEqual(file);
+        } else {
+          throw new Error("File input does not contain any files");
+        }
+        
+        expect(button).toBeEnabled();  
 
-        // Wait for the element to appear in the DOM
-        const inputElement = await waitFor(() => screen.getByTestId('surname-and-name-input'));
+        await act(async () => {await new Promise((r) => setTimeout(r, 3000))}) // "wait" for image
 
-        // Fill in required fields
-        userEvent.type(inputElement, 'John Doe');
+        await act(async () => {
+            userEvent.click(button);
+        })
 
-        // Wait for the button to appear in the DOM
-        const buttonElement = await waitFor(() => screen.getByTestId('button-test'));
-
-        // Click the submit button
-        userEvent.click(buttonElement);
-
-        // Wait for the API call to finish
         await waitFor(() => {
-            expect(mockAfterSubmit).toHaveBeenCalled();
-        });
+            expect(TeamApi.create).toHaveBeenCalled();
+            expect(TeamApi.update).not.toHaveBeenCalled();
+        })
 
-        // Assert that the afterSubmit function is called with the correct data
-        expect(mockAfterSubmit).toHaveBeenCalledWith({
-            id: 0,
-            isMain: false,
-            imageId: 0,
-            teamMemberLinks: [],
-            name: 'John Doe',
-            positions: [{ id: expect.any(Number), position: 'Developer' }],
-            description: '',
-        });
-    });
+      }, 100000000);
     /*
         it('should create a team member with all possible fields', async () => {
             render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);

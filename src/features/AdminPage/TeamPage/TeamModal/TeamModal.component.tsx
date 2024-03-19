@@ -22,7 +22,7 @@ import {
 } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import TextArea from 'antd/es/input/TextArea';
-import { Option } from 'antd/es/mentions';
+import { Option } from 'antd/es/mentions'; //???
 
 import PositionsApi from '@/app/api/team/positions.api';
 import FileUploader from '@/app/common/components/FileUploader/FileUploader.component';
@@ -67,9 +67,7 @@ const TeamModal: React.FC<{
 
     useEffect(() => {
         if (open) {
-            act(() => {
-                PositionsApi.getAll().then((pos) => setPositions(pos));
-            });
+            PositionsApi.getAll().then((pos) => setPositions(pos));
         }
     }, [open]);
 
@@ -251,7 +249,7 @@ const TeamModal: React.FC<{
                         <h2>
                             {teamMember ? 'Редагувати' : 'Додати'}
                             {' '}
-нового члена команди
+                            нового члена команди
                         </h2>
                     </div>
                     <div className="checkbox-container">
@@ -280,7 +278,8 @@ const TeamModal: React.FC<{
                                 onDeselect={onPositionDeselect}
                                 value={selectedPositions.map((x) => x.position)}
                             >
-                                {positions.map((t) => <Option key={`${t.id}`} value={t.position} />)}
+                                {/* {positions.map((t) => <Option key={`${t.id}`} value={t.position} />)} why Option instead of Select.Option??? */}
+                                {positions.map((t) => <Select.Option key={`${t.id}`} value={t.position}>{t.position}</Select.Option>)}
                             </Select>
                         </div>
                     </Form.Item>
@@ -387,8 +386,12 @@ const TeamModal: React.FC<{
                 </div>
 
                 <div className="center">
-                    {/* disabled={fileList?.length === 0} */}
-                    <Button data-testid="button-test" className="streetcode-custom-button" onClick={handleOk}>
+                    <Button
+                        disabled={fileList.length === 0}
+                        data-testid="button-test"
+                        className="streetcode-custom-button"
+                        onClick={handleOk}
+                    >
                         Зберегти
                     </Button>
                 </div>
