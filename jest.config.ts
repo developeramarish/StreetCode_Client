@@ -6,15 +6,9 @@ const jestConfig: JestConfigWithTsJest = {
   roots: ["<rootDir>"],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
-    "antd/es/form/FormItem": "<rootDir>/__mocks__/antd/es/form/FormItem",
-    "antd/es/form/Form": "<rootDir>/__mocks__/antd/es/form/Form",
-    "antd/es/form/TextArea": "<rootDir>/__mocks__/antd/es/input/TextArea",
-    "antd/es/mentions": "<rootDir>/__mocks__/antd/es/mentions/mentions",
     "^@assets/(.*)$": "<rootDir>/src/assets/$1",
-    "^antd/es/upload$": "<rootDir>/__mocks__/antd/es/upload/upload.tsx",
     "^antd/es/date-picker/locale/uk_UA$": "<rootDir>/__mocks__/antd/es/date/localeprovider.tsx",
-    "^antd/locale/(.*)$": "<rootDir>/node_modules/antd/locale/$1",
-    "^antd/es/table$": "<rootDir>/node_modules/antd/es/table",
+    "^antd/es/(.*)": "<rootDir>/node_modules/antd/lib/$1",
     //"antd": "<rootDir>/__mocks__/antd/antd",
     //"^antd/(.*)$": "<rootDir>/node_modules/antd/es/$1",
     

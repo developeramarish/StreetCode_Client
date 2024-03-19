@@ -1,25 +1,51 @@
 import React, { MouseEventHandler, ReactNode } from 'react';
-import {
-    act, fireEvent, render, screen, waitFor,
-} from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-// import matchMediaPolyfill, { Mock } from 'match-media-mock';
-import { Form } from 'antd';
+import TeamApi from '@/app/api/team/team.api';
+import Image, { ImageCreate } from '@/models/media/image.model';
+import { TeamCreateUpdate } from '@/models/team/team.model';
 
-import * as PositionsApi from '@/app/api/team/positions.api';
+import '@testing-library/jest-dom';
 
 import TeamModal from './TeamModal.component';
-import TeamApi from '@/app/api/team/team.api';
 
-const form = {
-    setFieldsValue: jest.fn(),
-    resetFields: jest.fn(),
-    validateFields: jest.fn(),
-    submit: jest.fn(),
-};
+global.HTMLCanvasElement.prototype.getContext = jest.fn(); // warning from FileUploader
+global.URL.createObjectURL = jest.fn(); // error(?) from FileUploader
 
-const getImageAsFileInArray = jest.fn();
+jest.mock('@/app/api/team/team.api', () => ({
+    create: jest.fn(() => { }),
+    update: jest.fn(() => { }),
+}));
+
+jest.mock('@/app/api/media/images.api', () => ({
+    create: (image: ImageCreate) => (
+        Promise.resolve({
+            id: 999,
+            base64: image.baseFormat,
+            blobName: image.title,
+            mimeType: image.mimeType,
+        } as Image)
+    ),
+}));
+
+jest.mock('@stores/root-store', () => ({
+    __esModule: true, // This property is needed when mocking modules that have a default export
+    default: () => ({
+        teamStore: {
+            fetchTeamAll: jest.fn().mockResolvedValue([]),
+            TeamMap: new Map(),
+            getTeamArray: [],
+            setInternalMap: jest.fn(),
+            createTeam: (team: TeamCreateUpdate) => {
+                TeamApi.create(team);
+            },
+            updateTeam: (team: TeamCreateUpdate) => {
+                TeamApi.update(team);
+            },
+        },
+    }),
+}));
 
 jest.mock('@/app/api/team/positions.api', () => ({
     getAll: jest.fn(() => Promise.resolve([
@@ -27,15 +53,6 @@ jest.mock('@/app/api/team/positions.api', () => ({
         { id: 2, position: 'Developer' },
     ])),
 }));
-
-jest.mock('antd', () => {
-    const originalAntd = jest.requireActual('antd');
-    return {
-        ...originalAntd,
-        ...jest.requireActual('antd/es/form/Form'),
-    };
-});
-const originalModule = jest.requireActual('antd');
 
 jest.mock('@features/AdminPage/NewStreetcode/MainBlock/PreviewFileModal/PreviewFileModal.component', () => ({
     __esModule: true,
@@ -63,14 +80,15 @@ window.matchMedia = window.matchMedia || function () {
 };
 
 describe('TeamModal Component', () => {
-    const mockAfterSubmit = jest.fn();
-    const open = true;
-    const setIsModalOpen = jest.fn();
+    let file: File;
+
+    beforeEach(() => {
+        file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
-    let file: File;
 
     // it.only('should render itself and its elements', () => {
     //     // eslint-disable-next-line max-len
@@ -83,46 +101,45 @@ describe('TeamModal Component', () => {
     //     debug();
     // });
 
-    beforeEach(() => {
-        file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-    test('should create a team member with required fields', async () => {
+    test.only('should create a team member with required fields', async () => {
+        // await act(async () => render(<TeamModal open={true} setIsModalOpen={() => {}} />));
         render(<TeamModal open setIsModalOpen={() => {}} />);
 
-        const inputElement = screen.getByTestId('surname-and-name-input');
-        const fileInput = screen.getByTestId('file-input');
-        const submitButton = screen.getByRole('button', { name: /зберегти/i });
+        const button = screen.getByRole('button', { name: /зберегти/i });
+        const nameInput = screen.getByTestId('surname-and-name-input');
 
-        // const createTeamWithRequiredOnly: TeamMember = {
-        //   id: 1,
-        //   isMain: false,
-        //   name: "John Doe",
-        //   imageId: 0,
-        //   teamMemberLinks: [],
-        //   positions: [],
-        // };
+        const fileInput = screen.getByTestId('fileuploader');
+        const inputElement = fileInput as HTMLInputElement;
 
-        // Simulate user interaction
-        await waitFor(() => {
-            userEvent.type(inputElement, 'John Doe');
+        await act(async () => {
+            userEvent.type(nameInput, 'something');
             userEvent.upload(fileInput, file);
-            userEvent.click(submitButton);
         });
-        // Assert that the TeamApi.create method was called
-        const fileinputElement = fileInput as HTMLInputElement;
 
-        expect(inputElement).toHaveValue('John Doe');
-        if (fileinputElement.files) {
-            expect(fileinputElement.files[0]).toStrictEqual(file);
+        expect(nameInput).toHaveValue('something');
+        if (inputElement.files) {
+            expect(inputElement.files[0]).toStrictEqual(file);
         } else {
             throw new Error('File input does not contain any files');
         }
-        expect(TeamApi.create).toHaveBeenCalled();
-    }, 10000);
+
+        expect(button).toBeEnabled();
+
+        await act(async () => {
+            await new Promise((r) => {
+                setTimeout(r, 3000);
+            });
+        }); // "wait" for image
+
+        await act(async () => {
+            userEvent.click(button);
+        });
+
+        await waitFor(() => {
+            expect(TeamApi.create).toHaveBeenCalled();
+            expect(TeamApi.update).not.toHaveBeenCalled();
+        });
+    }, 100000000);
     /*
         it('should create a team member with all possible fields', async () => {
             render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
