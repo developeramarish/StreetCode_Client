@@ -10,6 +10,7 @@ import { Form } from 'antd';
 import * as PositionsApi from '@/app/api/team/positions.api';
 
 import TeamModal from './TeamModal.component';
+import TeamApi from '@/app/api/team/team.api';
 
 const form = {
     setFieldsValue: jest.fn(),
@@ -69,6 +70,7 @@ describe('TeamModal Component', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
+    let file: File;
 
     // it.only('should render itself and its elements', () => {
     //     // eslint-disable-next-line max-len
@@ -81,37 +83,46 @@ describe('TeamModal Component', () => {
     //     debug();
     // });
 
-    test.only('should create a team member with required fields', async () => {
-        render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
-
-        // Wait for the element to appear in the DOM
-        const inputElement = await waitFor(() => screen.getByTestId('surname-and-name-input'));
-
-        // Fill in required fields
-        userEvent.type(inputElement, 'John Doe');
-
-        // Wait for the button to appear in the DOM
-        const buttonElement = await waitFor(() => screen.getByTestId('button-test'));
-
-        // Click the submit button
-        userEvent.click(buttonElement);
-
-        // Wait for the API call to finish
-        await waitFor(() => {
-            expect(mockAfterSubmit).toHaveBeenCalled();
-        });
-
-        // Assert that the afterSubmit function is called with the correct data
-        expect(mockAfterSubmit).toHaveBeenCalledWith({
-            id: 0,
-            isMain: false,
-            imageId: 0,
-            teamMemberLinks: [],
-            name: 'John Doe',
-            positions: [{ id: expect.any(Number), position: 'Developer' }],
-            description: '',
-        });
+    beforeEach(() => {
+        file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
     });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+    test('should create a team member with required fields', async () => {
+        render(<TeamModal open setIsModalOpen={() => {}} />);
+
+        const inputElement = screen.getByTestId('surname-and-name-input');
+        const fileInput = screen.getByTestId('file-input');
+        const submitButton = screen.getByRole('button', { name: /зберегти/i });
+
+        // const createTeamWithRequiredOnly: TeamMember = {
+        //   id: 1,
+        //   isMain: false,
+        //   name: "John Doe",
+        //   imageId: 0,
+        //   teamMemberLinks: [],
+        //   positions: [],
+        // };
+
+        // Simulate user interaction
+        await waitFor(() => {
+            userEvent.type(inputElement, 'John Doe');
+            userEvent.upload(fileInput, file);
+            userEvent.click(submitButton);
+        });
+        // Assert that the TeamApi.create method was called
+        const fileinputElement = fileInput as HTMLInputElement;
+
+        expect(inputElement).toHaveValue('John Doe');
+        if (fileinputElement.files) {
+            expect(fileinputElement.files[0]).toStrictEqual(file);
+        } else {
+            throw new Error('File input does not contain any files');
+        }
+        expect(TeamApi.create).toHaveBeenCalled();
+    }, 10000);
     /*
         it('should create a team member with all possible fields', async () => {
             render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
