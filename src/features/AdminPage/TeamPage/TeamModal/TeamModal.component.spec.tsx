@@ -1,5 +1,7 @@
 import React, { MouseEventHandler, ReactNode } from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+    act, fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import TeamApi from '@/app/api/team/team.api';
@@ -107,17 +109,20 @@ describe('TeamModal Component', () => {
 
         const button = screen.getByRole('button', { name: /зберегти/i });
         const nameInput = screen.getByTestId('surname-and-name-input');
-
+        // console.log(nameInput);
         const fileInput = screen.getByTestId('fileuploader');
         const inputElement = fileInput as HTMLInputElement;
 
         await act(async () => {
-            userEvent.type(nameInput, 'something');
+            fireEvent.change(nameInput, { target: { value: 'something' } });
+           // console.log(nameInput);
             userEvent.upload(fileInput, file);
         });
 
         expect(nameInput).toHaveValue('something');
         if (inputElement.files) {
+            console.log(inputElement);
+            console.log('file', file);
             expect(inputElement.files[0]).toStrictEqual(file);
         } else {
             throw new Error('File input does not contain any files');
