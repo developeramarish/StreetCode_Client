@@ -83,6 +83,9 @@ window.matchMedia = window.matchMedia || function () {
 
 describe('TeamModal Component', () => {
     let file: File;
+    const mockAfterSubmit = jest.fn();
+    const open = true;
+    const setIsModalOpen = jest.fn();
 
     beforeEach(() => {
         file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
@@ -92,16 +95,14 @@ describe('TeamModal Component', () => {
         jest.clearAllMocks();
     });
 
-    // it.only('should render itself and its elements', () => {
-    //     // eslint-disable-next-line max-len
-    //     const { container, debug } = render(<TeamModal
-    //         open={open}
-    //         setIsModalOpen={setIsModalOpen}
-    //         afterSubmit={mockAfterSubmit}
-    //     />);
-
-    //     debug();
-    // });
+    it.only('should render itself and its elements', () => {
+        // eslint-disable-next-line max-len
+        const { container } = render(<TeamModal
+            open={open}
+            setIsModalOpen={setIsModalOpen}
+            afterSubmit={mockAfterSubmit}
+        />);
+    });
 
     test.only('should create a team member with required fields', async () => {
         // await act(async () => render(<TeamModal open={true} setIsModalOpen={() => {}} />));
@@ -109,20 +110,18 @@ describe('TeamModal Component', () => {
 
         const button = screen.getByRole('button', { name: /зберегти/i });
         const nameInput = screen.getByTestId('surname-and-name-input');
-        // console.log(nameInput);
         const fileInput = screen.getByTestId('fileuploader');
         const inputElement = fileInput as HTMLInputElement;
 
         await act(async () => {
             fireEvent.change(nameInput, { target: { value: 'something' } });
-           // console.log(nameInput);
             userEvent.upload(fileInput, file);
         });
 
         expect(nameInput).toHaveValue('something');
         if (inputElement.files) {
-            console.log(inputElement);
-            console.log('file', file);
+            //   console.log(inputElement);
+            //   console.log('file', file);
             expect(inputElement.files[0]).toStrictEqual(file);
         } else {
             throw new Error('File input does not contain any files');
