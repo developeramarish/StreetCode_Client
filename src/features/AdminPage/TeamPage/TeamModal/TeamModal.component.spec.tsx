@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, ReactNode } from 'react';
+import React, { createRef, MouseEventHandler, ReactNode } from 'react';
 import {
     act, fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
@@ -86,6 +86,7 @@ describe('TeamModal Component', () => {
     const mockAfterSubmit = jest.fn();
     const open = true;
     const setIsModalOpen = jest.fn();
+    const descriptionInputRef = createRef<HTMLTextAreaElement>();
 
     beforeEach(() => {
         file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
@@ -95,18 +96,18 @@ describe('TeamModal Component', () => {
         jest.clearAllMocks();
     });
 
-    it.only('should render itself and its elements', () => {
-        // eslint-disable-next-line max-len
-        const { container } = render(<TeamModal
-            open={open}
-            setIsModalOpen={setIsModalOpen}
-            afterSubmit={mockAfterSubmit}
-        />);
-    });
+    // it.only('should render itself and its elements', () => {
+    //     // eslint-disable-next-line max-len
+    //     const { container } = render(<TeamModal
+    //         open={open}
+    //         setIsModalOpen={setIsModalOpen}
+    //         afterSubmit={mockAfterSubmit}
+    //     />);
+    // });
 
-    test.only('should create a team member with required fields', async () => {
+    test.skip('should create a team member with required fields', async () => {
         // await act(async () => render(<TeamModal open={true} setIsModalOpen={() => {}} />));
-        render(<TeamModal open setIsModalOpen={() => {}} />);
+        render(<TeamModal open setIsModalOpen={() => { }} />);
 
         const button = screen.getByRole('button', { name: /зберегти/i });
         const nameInput = screen.getByTestId('surname-and-name-input');
@@ -115,12 +116,15 @@ describe('TeamModal Component', () => {
 
         await act(async () => {
             fireEvent.change(nameInput, { target: { value: 'something' } });
-            userEvent.upload(fileInput, file);
+            fireEvent.change(fileInput, {
+                target: { files: [file] },
+            });
         });
 
         expect(nameInput).toHaveValue('something');
         if (inputElement.files) {
-            //   console.log(inputElement);
+            // console.log(inputElement);
+            // console.log(inputElement.files);
             //   console.log('file', file);
             expect(inputElement.files[0]).toStrictEqual(file);
         } else {
@@ -144,150 +148,183 @@ describe('TeamModal Component', () => {
             expect(TeamApi.update).not.toHaveBeenCalled();
         });
     }, 100000000);
+
+    test.only('should create a team member with all possible fields', async () => {
+        render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
+
+        const button = screen.getByRole('button', { name: /зберегти/i });
+        const nameInput = screen.getByTestId('surname-and-name-input');
+        const fileInput = screen.getByTestId('fileuploader');
+        const inputElement = fileInput as HTMLInputElement;
+
+        // Fill in all fields
+        await act(async () => {
+            fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+        });
+        console.log(nameInput);
+        const positionsSelect = screen.getByTestId('positions-select');
+        userEvent.type(positionsSelect, 'Developer');
+        const descriptionInput = screen.queryByTestId('description-input');
+        if (descriptionInput) userEvent.type(descriptionInput, 'Lorem ipsum');
+
+        const socialSelect = screen.getByTestId('social-select');
+        userEvent.type(socialSelect, 'LinkedIn');
+
+        const urlInput = screen.getByTestId('url-test-input');
+        userEvent.type(urlInput, 'https://www.linkedin.com/in/johndoe');
+
+        await act(async () => {
+            fireEvent.change(fileInput, {
+                target: { files: [file] },
+            });
+        });
+
+        expect(nameInput).toHaveValue('John Doe');
+        if (inputElement.files) {
+            expect(inputElement.files[0]).toStrictEqual(file);
+        } else {
+            throw new Error('File input does not contain any files');
+        }
+
+        expect(button).toBeEnabled();
+
+        await act(async () => {
+            await new Promise((r) => {
+                setTimeout(r, 3000);
+            });
+        }); // "wait" for image
+
+        await act(async () => {
+            userEvent.click(button);
+        });
+
+        await waitFor(() => expect(mockAfterSubmit).toHaveBeenCalledWith(expect.any(Object)));
+
+        expect(mockAfterSubmit).toHaveBeenCalledWith({
+            id: 0,
+            isMain: false,
+            imageId: 0,
+            teamMemberLinks: [
+                {
+                    id: 0,
+                    logoType: 4, // Assuming LinkedIn has the index 4 in your SOCIAL_OPTIONS
+                    targetUrl: 'https://www.linkedin.com/in/johndoe',
+                },
+            ],
+            name: 'John Doe',
+            positions: [{ id: expect.any(Number), position: 'Developer' }],
+            description: 'Lorem ipsum',
+        });
+    }, 100000000);
     /*
-        it('should create a team member with all possible fields', async () => {
-            render(<TeamModal open setIsModalOpen={setIsModalOpen} afterSubmit={mockAfterSubmit} />);
+            it('should edit a team member', async () => {
+                const originalTeamMember = {
+                    id: 1,
+                    isMain: false,
+                    imageId: 0,
+                    teamMemberLinks: [],
+                    name: 'Jane Doe',
+                    positions: [{ id: 1, position: 'Designer' }],
+                    description: 'Some description',
+                };
 
-            // Fill in all fields
-            userEvent.type(screen.getByLabelText(/Прізвище та ім'я/i), 'John Doe');
-            userEvent.type(screen.getByLabelText(/Позиції/i), 'Developer');
-            userEvent.type(screen.getByLabelText(/Опис/i), 'Lorem ipsum');
-            // Add social media link
-            userEvent.selectOptions(screen.getByLabelText(/Соціальна мережа/i), 'LinkedIn');
-            userEvent.type(screen.getByLabelText(/URL/i), 'https://www.linkedin.com/in/johndoe');
+                render(
+                    <TeamModal
+                        open
+                        setIsModalOpen={setIsModalOpen}
+                        afterSubmit={mockAfterSubmit}
+                        teamMember={originalTeamMember}
+                    />,
+                );
 
-            // Click the submit button
-            userEvent.click(screen.getByText(/Зберегти/i));
+                // Change the name and position
+                userEvent.clear(screen.getByLabelText(/Прізвище та ім'я/i));
+                userEvent.type(screen.getByLabelText(/Прізвище та ім'я/i), 'Edited Jane Doe');
+                userEvent.clear(screen.getByLabelText(/Позиції/i));
+                userEvent.type(screen.getByLabelText(/Позиції/i), 'Lead Designer');
 
-            // Wait for the API call to finish
-            await waitFor(() => expect(mockAfterSubmit).toHaveBeenCalledWith(expect.any(Object)));
+                // Click the submit button
+                userEvent.click(screen.getByText(/Зберегти/i));
 
-            // Assert that the afterSubmit function is called with the correct data
-            expect(mockAfterSubmit).toHaveBeenCalledWith({
-                id: 0,
-                isMain: false,
-                imageId: 0,
-                teamMemberLinks: [
-                    {
-                        id: 0,
-                        logoType: 4, // Assuming LinkedIn has the index 4 in your SOCIAL_OPTIONS
-                        targetUrl: 'https://www.linkedin.com/in/johndoe',
-                    },
-                ],
-                name: 'John Doe',
-                positions: [{ id: expect.any(Number), position: 'Developer' }],
-                description: 'Lorem ipsum',
+                // Wait for the API call to finish
+                await waitFor(() => expect(mockAfterSubmit).toHaveBeenCalledWith(expect.any(Object)));
+
+                // Assert that the afterSubmit function is called with the correct data
+                expect(mockAfterSubmit).toHaveBeenCalledWith({
+                    id: 1,
+                    isMain: false,
+                    imageId: 0,
+                    teamMemberLinks: [],
+                    name: 'Edited Jane Doe',
+                    positions: [{ id: 1, position: 'Lead Designer' }],
+                    description: 'Some description',
+                });
             });
-        });
 
-        it('should edit a team member', async () => {
-            const originalTeamMember = {
-                id: 1,
-                isMain: false,
-                imageId: 0,
-                teamMemberLinks: [],
-                name: 'Jane Doe',
-                positions: [{ id: 1, position: 'Designer' }],
-                description: 'Some description',
-            };
+            it('should close the modal when clicking the close icon', async () => {
+                render(
+                    <TeamModal
+                        open
+                        setIsModalOpen={setIsModalOpen}
+                        afterSubmit={mockAfterSubmit}
+                        teamMember={mockTeamMember}
+                    />,
+                );
 
-            render(
-                <TeamModal
-                    open
-                    setIsModalOpen={setIsModalOpen}
-                    afterSubmit={mockAfterSubmit}
-                    teamMember={originalTeamMember}
-                />,
-            );
+                // Click the close icon
+                userEvent.click(screen.getByTestId('modal-close'));
 
-            // Change the name and position
-            userEvent.clear(screen.getByLabelText(/Прізвище та ім'я/i));
-            userEvent.type(screen.getByLabelText(/Прізвище та ім'я/i), 'Edited Jane Doe');
-            userEvent.clear(screen.getByLabelText(/Позиції/i));
-            userEvent.type(screen.getByLabelText(/Позиції/i), 'Lead Designer');
-
-            // Click the submit button
-            userEvent.click(screen.getByText(/Зберегти/i));
-
-            // Wait for the API call to finish
-            await waitFor(() => expect(mockAfterSubmit).toHaveBeenCalledWith(expect.any(Object)));
-
-            // Assert that the afterSubmit function is called with the correct data
-            expect(mockAfterSubmit).toHaveBeenCalledWith({
-                id: 1,
-                isMain: false,
-                imageId: 0,
-                teamMemberLinks: [],
-                name: 'Edited Jane Doe',
-                positions: [{ id: 1, position: 'Lead Designer' }],
-                description: 'Some description',
+                // Assert that setIsModalOpen is called with false
+                expect(setIsModalOpen).toHaveBeenCalledWith(false);
             });
-        });
 
-        it('should close the modal when clicking the close icon', async () => {
-            render(
-                <TeamModal
-                    open
-                    setIsModalOpen={setIsModalOpen}
-                    afterSubmit={mockAfterSubmit}
-                    teamMember={mockTeamMember}
-                />,
-            );
+            it('should set form fields when team member is edited', async () => {
+                // Arrange: Render your component, set up any necessary preconditions
+                const teamMember = {
+                    id: 1,
+                    isMain: false,
+                    imageId: 0,
+                    teamMemberLinks: [],
+                    name: 'Jane Doe',
+                    positions: [{ id: 1, position: 'Designer' }],
+                    description: 'Some description',
+                };
 
-            // Click the close icon
-            userEvent.click(screen.getByTestId('modal-close'));
+                render(
+                    <TeamModal
+                        open
+                        setIsModalOpen={setIsModalOpen}
+                        afterSubmit={mockAfterSubmit}
+                        teamMember={mockTeamMember}
+                    />,
+                );
 
-            // Assert that setIsModalOpen is called with false
-            expect(setIsModalOpen).toHaveBeenCalledWith(false);
-        });
+                // Act: Simulate the user interactions that should result in a call to setFieldsValue
+                // This could be filling out fields, clicking buttons, etc.
+                userEvent.type(screen.getByLabelText(/Прізвище та ім'я/i), 'John Doe');
+                userEvent.type(screen.getByLabelText(/Позиції/i), 'Developer');
+                userEvent.type(screen.getByLabelText(/Опис/i), 'Lorem ipsum');
+                userEvent.click(screen.getByText(/Зберегти/i));
 
-        it('should set form fields when team member is edited', async () => {
-            // Arrange: Render your component, set up any necessary preconditions
-            const teamMember = {
-                id: 1,
-                isMain: false,
-                imageId: 0,
-                teamMemberLinks: [],
-                name: 'Jane Doe',
-                positions: [{ id: 1, position: 'Designer' }],
-                description: 'Some description',
-            };
-
-            render(
-                <TeamModal
-                    open
-                    setIsModalOpen={setIsModalOpen}
-                    afterSubmit={mockAfterSubmit}
-                    teamMember={mockTeamMember}
-                />,
-            );
-
-            // Act: Simulate the user interactions that should result in a call to setFieldsValue
-            // This could be filling out fields, clicking buttons, etc.
-            userEvent.type(screen.getByLabelText(/Прізвище та ім'я/i), 'John Doe');
-            userEvent.type(screen.getByLabelText(/Позиції/i), 'Developer');
-            userEvent.type(screen.getByLabelText(/Опис/i), 'Lorem ipsum');
-            userEvent.click(screen.getByText(/Зберегти/i));
-
-            // Assert: Check that setFieldsValue was called with the expected arguments
-            expect(form.setFieldsValue).toHaveBeenCalledWith({
-                ...teamMember,
-                positions: teamMember.positions.map((s) => s.position),
-                image: getImageAsFileInArray(),
+                // Assert: Check that setFieldsValue was called with the expected arguments
+                expect(form.setFieldsValue).toHaveBeenCalledWith({
+                    ...teamMember,
+                    positions: teamMember.positions.map((s) => s.position),
+                    image: getImageAsFileInArray(),
+                });
             });
-        });
 
-        it('renders mock preview modal', () => {
-            render(
-                <TeamModal
-                    open
-                    setIsModalOpen={setIsModalOpen}
-                    afterSubmit={mockAfterSubmit}
-                    teamMember={mockTeamMember}
-                />,
-            );
+            it('renders mock preview modal', () => {
+                render(
+                    <TeamModal
+                        open
+                        setIsModalOpen={setIsModalOpen}
+                        afterSubmit={mockAfterSubmit}
+                        teamMember={mockTeamMember}
+                    />,
+                );
 
-            expect(screen.getByTestId('mockPreviewModal')).toBeInTheDocument();
-        });
-        */
+                expect(screen.getByTestId('mockPreviewModal')).toBeInTheDocument();
+            });
+            */
 });

@@ -277,6 +277,7 @@ const TeamModal: React.FC<{
                                 mode="tags"
                                 onDeselect={onPositionDeselect}
                                 value={selectedPositions.map((x) => x.position)}
+                                data-testid="positions-select"
                             >
                                 {/* {positions.map((t) => <Option key={`${t.id}`} value={t.position} />)} why Option instead of Select.Option??? */}
                                 {positions.map((t) => <Select.Option key={`${t.id}`} value={t.position}>{t.position}</Select.Option>)}
@@ -287,7 +288,7 @@ const TeamModal: React.FC<{
                         name="description"
                         label="Опис: "
                     >
-                        <TextArea showCount maxLength={70} />
+                        <TextArea showCount maxLength={70} data-testid="description-input" />
                     </Form.Item>
 
                     <Form.Item
@@ -363,6 +364,7 @@ const TeamModal: React.FC<{
                     >
                         <Select
                             options={SOCIAL_OPTIONS}
+                            data-testid="social-select"
                         />
                     </FormItem>
                     <Form.Item
@@ -370,7 +372,7 @@ const TeamModal: React.FC<{
                         className="url-input"
                         name="url"
                     >
-                        <Input min={1} max={255} showCount />
+                        <Input data-testid="url-test-input" min={1} max={255} showCount />
                     </Form.Item>
 
                     <Form.Item
