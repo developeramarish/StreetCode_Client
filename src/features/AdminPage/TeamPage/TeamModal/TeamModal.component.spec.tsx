@@ -161,11 +161,18 @@ describe('TeamModal Component', () => {
         await act(async () => {
             fireEvent.change(nameInput, { target: { value: 'John Doe' } });
         });
-        console.log(nameInput);
         const positionsSelect = screen.getByTestId('positions-select');
+        console.log('positionsSelect', positionsSelect);
         userEvent.type(positionsSelect, 'Developer');
-        const descriptionInput = screen.queryByTestId('description-input');
-        if (descriptionInput) userEvent.type(descriptionInput, 'Lorem ipsum');
+        const isDescriptionInputVisible = () => screen.queryByTestId('description-input');
+
+        const descriptionInput = await waitFor(isDescriptionInputVisible);
+        await act(async () => {
+            if (descriptionInput) {
+                fireEvent.change(descriptionInput, { target: { value: 'Lorem ipsum' } });
+            }
+        });
+        console.log('descriptionInput', descriptionInput);
 
         const socialSelect = screen.getByTestId('social-select');
         userEvent.type(socialSelect, 'LinkedIn');
@@ -203,7 +210,7 @@ describe('TeamModal Component', () => {
         expect(mockAfterSubmit).toHaveBeenCalledWith({
             id: 0,
             isMain: false,
-            imageId: 0,
+            imageId: 999,
             teamMemberLinks: [
                 {
                     id: 0,
