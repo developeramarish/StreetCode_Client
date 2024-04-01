@@ -53,7 +53,6 @@ const StreetcodeSliderItem = ({ streetcode, image }: Props) => {
                         subTitle={streetcode.text}
                         moreBtnText="До стріткоду"
                         moreBtnAsLink={{ link: streetcode.transliterationUrl, state: historyState }}
-                        isStreetcodeSlider={true}
                     />
                 </div>
             </div>

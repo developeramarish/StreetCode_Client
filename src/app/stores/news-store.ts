@@ -90,7 +90,6 @@ export default class NewsStore {
                     runInAction(() => {
                         this.setInternalMap(sortedNews);
                     });
-                    return sortedNews;
                 }),
             },
         );

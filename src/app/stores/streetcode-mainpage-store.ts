@@ -23,7 +23,6 @@ export default class StreetcodesMainPageStore {
                     runInAction(() => {
                         streetcodesMainPage.forEach(this.setItem);
                     });
-                    return streetcodesMainPage;
                 }),
             },
         );
