@@ -4,6 +4,7 @@
 @use "@sass/mixins/_wrapper.mixins.scss" as wr;
 @use "@sass/mixins/_vendor.mixins.scss" as vnd;
 @use "@assets/sass/_utils.functions.scss" as f;
+@use "@features/SlickSlider/SlickSlider.styles.scss" as ss;
 .sourcesWrapper {
     @include wr.main-page-block-wrapper();
     margin-top: 110px;
@@ -37,7 +38,7 @@
         }
     }
     .sourcesSliderContainerSmall {
-        @include mut.sizedImportant(1230px, 100%);
+        @include mut.sizedImportant(1100px, 100%);
         .slick-arrow {
             display: none;
             visibility: hidden;
@@ -77,6 +78,184 @@
     }
 }
 
+@media screen and (max-width: 1300px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 880px);
+        margin: 0 auto;
+        .slick-arrow {
+            position: absolute;
+            transform: translateY(-1.8rem);
+            margin-left: 8px;
+            margin-right: 23px;
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 750px);
+        margin: 0 auto;
+        .slick-arrow {
+            position: absolute;
+            transform: translateY(-1.8rem);
+            margin-left: 8px;
+            margin-right: 23px;
+        }
+    }
+}
+
+@media screen and (max-width: 1070px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 640px);
+        margin: 0 auto;
+        .slick-arrow {
+            position: absolute;
+            transform: translateY(-1.8rem);
+            margin-left: 8px;
+            margin-right: 23px;
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 640px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 640px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 829px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 530px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 715px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 380px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 265px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 455px) {
+    .sourcesWrapper .sourcesSliderContainerBig {
+        position: relative;
+        @include mut.sized($width: 115px);
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(1100px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 90px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(870px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(750px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 925px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(640px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 810px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(510px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(380px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(290px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 460px) {
+    .sourcesWrapper .sourcesSliderContainerSmall {
+        @include mut.sizedImportant(120px, 100%);
+        .slick-arrow {
+            display: none;
+            visibility: hidden;
+        }
+        margin-left: 10px;
+    }
+}
+
 @media screen and (max-width: 780px) {
     .sourcesWrapper .sourcesContainer {
         margin-bottom: 0;
@@ -88,4 +267,3 @@
         left: f.pxToRem(1px);
     }
 }
-

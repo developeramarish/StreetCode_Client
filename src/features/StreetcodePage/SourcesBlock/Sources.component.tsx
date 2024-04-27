@@ -32,6 +32,7 @@ const SourcesComponent = () => {
     dots: windowsize.width <= 1024,
     variableWidth: true,
     swipeOnClick: false,
+    slidesToShow: windowsize.width > 1300 ? 3:(windowsize.width > 829 || windowsize.width<769 && windowsize.width>559 ? 2:1),
     slidesToScroll: 1,
     rows: 1,
     initialSlide: 0,
