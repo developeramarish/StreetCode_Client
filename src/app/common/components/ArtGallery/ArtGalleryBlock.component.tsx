@@ -14,6 +14,7 @@ import { ArtCreateUpdate } from '@models/media/art.model';
 import StreetcodeArtSlide from '@models/media/streetcode-art-slide.model';
 import useMobx, { useStreetcodeDataContext } from '@stores/root-store';
 import BlockHeading from '@streetcode/HeadingBlock/BlockHeading.component';
+import ArtGalleryTemplatesModal from '../modals/ArtGalleryTemplates/ArtGalleryTemplatesModal.component';
 
 import { Button } from 'antd';
 import { useMediaQuery } from 'react-responsive';
@@ -33,6 +34,8 @@ const ArtGallery = ({ title="Арт-галерея", isAdmin, isConfigurationGal
     const { fetchNextArtSlidesByStreetcodeId, streetcodeArtSlides, amountOfSlides } = streetcodeArtSlideStore;
     const { streetcodeArtSlides: templateArtSlides } = artGalleryTemplateStore;
     const [slickProps, setSlickProps] = useState<SliderSettings>(SLIDER_PROPS);
+    const [modalAddOpened, setModalAddOpened] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const secondRender = useRef(false);
     const isMobile = useMediaQuery({
         query: '(max-width: 680px)',
@@ -124,7 +127,13 @@ const ArtGallery = ({ title="Арт-галерея", isAdmin, isConfigurationGal
             });
         }
     }
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
 
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
     function handleClearSlideTemplate() {
         artGalleryTemplateStore.clearTemplates();
     }
@@ -138,6 +147,18 @@ const ArtGallery = ({ title="Арт-галерея", isAdmin, isConfigurationGal
                 >
                     <div className="artGalleryContainer container">
                         <BlockHeading headingText={title} />
+                        <div className="container-for-arts-block">
+                            <Button
+                                className="streetcode-custom-button"
+                                onClick={handleOpenModal}
+                            >
+                            Обрати шаблон
+                            </Button>
+                         </div>
+                         <ArtGalleryTemplatesModal 
+                         isOpen={isModalOpen}
+                         onClose={handleCloseModal}
+                         />
                         <div className="artGalleryContentContainer">
                             <div className="artGallerySliderContainer">
                             {isMobile
