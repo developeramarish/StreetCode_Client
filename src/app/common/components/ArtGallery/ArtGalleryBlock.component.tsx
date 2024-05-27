@@ -233,3 +233,4 @@ const ArtGallery = ({
 };
 
 export default observer(ArtGallery);
+
