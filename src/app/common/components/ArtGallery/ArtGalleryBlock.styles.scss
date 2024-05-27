@@ -79,6 +79,10 @@
                     @include mut.sized(100%, 100%);
                 }
             }
+            .container-for-arts-block {
+                margin-left: 300px;
+                margin-top: -95px;
+            }
         }
     }
 }
@@ -90,6 +94,10 @@
                 .artGallerySliderContainer {
                     height: pxToRem(400px);
                 }
+            }
+            .container-for-arts-block {
+                margin-left: 250px;
+                margin-top: -95px;
             }
         }
     }
@@ -104,11 +112,14 @@
                     gap: pxToRem(s.$art-gallery-gap-mobile);
                     height: pxToRem(362px);
                     overflow-y: hidden;
-                    overflow-x: scroll;
                     display: flex;
                     flex-direction: column;
                     flex-wrap: wrap;
                 }
+            }
+            .container-for-arts-block {
+                margin-left: 160px;
+                margin-top: -95px;
             }
         }
     }
