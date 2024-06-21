@@ -21,12 +21,17 @@ export default class StreetcodeStore {
     public set setStreetCode(streetcode: Streetcode) {
         this.currentStreetcode = streetcode.id;
     }
+    
+    public set setStreetCodeId(id: number | null) {
+        this.currentStreetcode = id?id:-1;
+    }
 
     public itChangedIdChange = () => {
         this.itChangedId = false;
     };
 
     public trackChange = () => {
+        console.log(this.prevStreetcode, this.currentStreetcode)
         if (this.prevStreetcode !== this.currentStreetcode) {
             this.prevStreetcode = this.currentStreetcode;
             this.itChangedId = true;

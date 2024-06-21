@@ -11,7 +11,7 @@ import PartnersApi from '@app/api/partners/partners.api';
 import SourcesApi from '@app/api/sources/sources.api';
 import RelatedFigureApi from '@app/api/streetcode/related-figure.api';
 import TextsApi from '@app/api/streetcode/text-content/texts.api';
-import useMobx from '@app/stores/root-store';
+import useMobx, { useStreetcodeDataContext } from '@app/stores/root-store';
 import ArtGallery from '@components/ArtGallery/ArtGalleryBlock.component';
 import ArtGalleryDndContext from '@components/ArtGallery/context/ArtGalleryDndContext';
 import StreetcodeArtsBlock from '@features/AdminPage/NewStreetcode/StreetcodeArtsBlock/StreetcodeArtsBlock.component';
@@ -56,6 +56,7 @@ import PartnerBlockAdmin from './PartnerBlock/PartnerBlockAdmin.components';
 import SubtitleBlock from './SubtitileBlock/SubtitleBlock.component';
 import TextBlock from './TextBlock/TextBlock.component';
 import TimelineBlockAdmin from './TimelineBlock/TimelineBlockAdmin.component';
+import { runInAction } from 'mobx';
 
 function reindex<T extends { index?: number }>(list: T[]): T[] {
     const result = Array.from(list);
@@ -83,6 +84,8 @@ const NewStreetcode = () => {
         tagsStore,
         streetcodeArtSlideStore,
     } = useMobx();
+
+    const { streetcodeStore } = useStreetcodeDataContext();
 
     const [partners, setPartners] = useState<PartnerCreateUpdateShort[]>([]);
     const [selectedTags, setSelectedTags] = useState<StreetcodeTag[]>([]);
@@ -155,8 +158,10 @@ const NewStreetcode = () => {
 
     const { id } = useParams<any>();
     const parseId = id ? +id : null;
+    runInAction(() => {
+        streetcodeStore.setStreetCodeId = parseId;
+    });
     const navigate = useNavigate();
-
     const handleRemove = useCallback(() => {
         setVisibleModal(true);
     }, []);
@@ -502,6 +507,10 @@ const NewStreetcode = () => {
         setSavedChanges(true);
         onFinish(data);
     };
+
+    useEffect(() => {
+        
+    }, [])
 
     return (
         <div className="newStreetcodeContainer">
